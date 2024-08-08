@@ -28,12 +28,26 @@ class _ScaffoldAppState extends State<ScaffoldApp> {
     _updateRank();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Press button challenge'),
+        title: Container(
+          alignment: Alignment.topCenter,
+          decoration: BoxDecoration(
+            color: Colors.blue[500],
+            ),
+          padding: EdgeInsets.all(50),
+          margin: EdgeInsets.all(50),
+          child: Text(
+            'Press button challenge',
+             style: TextStyle(fontSize: 30),
+              textAlign: TextAlign.center,
+              ),
+        )
       ),
       body: Center(
         child: Column(
           children: [
+            const SizedBox(height: 300,),
             Text('You have pressed the button $_count times.'),
+            Padding(padding: EdgeInsets.only(top: 20)),
             Text('Your currently rank is $_rank.'),
             ]
           ),
