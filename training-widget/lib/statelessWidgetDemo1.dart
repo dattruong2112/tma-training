@@ -43,11 +43,11 @@ class MyScaffold extends StatelessWidget {
             style: Theme.of(context).primaryTextTheme.titleLarge,
           ),
         ),
-          const Row(
-            children: [
-              Padding(padding: EdgeInsets.only(left: 350, top: 120)),
-              Text('Welcome to Lorem Ipsum', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),)
-            ],
+          Container(
+            child: Align(
+              alignment: Alignment(0, 0),
+              child: Text('Welcome to Lorem Ipsum', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),)
+              ),
             ),
           const Expanded(
             child: Center(
