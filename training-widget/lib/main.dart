@@ -8,3 +8,12 @@ void main() {
     const Statefuldemo1App()
   );
 }
+
+// void main() {
+//   runApp(
+//     const MaterialApp(
+//       title: 'Demo 1',
+//       home: MyScaffold(),
+//     )
+//   );
+// }
