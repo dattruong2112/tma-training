@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_cart_project/navigation_menu.dart';
+import 'package:shopping_cart_project/widget/navigation_menu.dart';
 import 'package:shopping_cart_project/pages/intro_page.dart';
 import 'package:shopping_cart_project/pages/profile_page.dart';
 import 'package:shopping_cart_project/pages/sign_in_page.dart';
 import 'package:shopping_cart_project/pages/sign_up_page.dart';
 import 'package:shopping_cart_project/pages/store_page.dart';
-import 'package:shopping_cart_project/side_menu.dart';
+import 'package:shopping_cart_project/widget/side_menu.dart';
 import 'package:shopping_cart_project/widget/theme.dart';
 
 void main() {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       home: const WelcomeScreen(),
       routes: {
         '/homepage': (context) => const NavigationMenu(),
-        '/profilepage': (context) => const ProfilePage(),
+        '/profile_page': (context) => const ProfilePage(),
         '/sign_in_page': (context) => const SignInScreen(),
         '/sign_up_page': (context) => const SignUpScreen(),
         '/side_menu': (context) => const SideMenu(),

@@ -6,7 +6,7 @@ import 'package:shopping_cart_project/pages/favorite_page.dart';
 import 'package:shopping_cart_project/pages/order_page.dart';
 import 'package:shopping_cart_project/pages/profile_page.dart';
 import 'package:shopping_cart_project/pages/store_page.dart';
-import 'pages/homescreen.dart';
+import '../pages/home_screen.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});

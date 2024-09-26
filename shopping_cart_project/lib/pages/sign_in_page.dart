@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:shopping_cart_project/service/user_service.dart';
+import 'package:shopping_cart_project/widget/custom_logo.dart';
 import 'package:shopping_cart_project/widget/custom_scaffold.dart';
 import 'package:shopping_cart_project/widget/custom_text_form.dart';
 import 'package:shopping_cart_project/widget/sized_box.dart';
@@ -14,7 +16,27 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _formSignInKey = GlobalKey<FormState>();
-  bool rememberPassword = true;
+  bool rememberPassword = false;
+
+  final UserService userService = UserService();
+
+  Future<void> handleSignIn() async {
+    if (_formSignInKey.currentState!.validate()) {
+      String email = emailController.text.trim();
+      String password = passwordController.text.trim();
+
+      bool loginSuccess = await userService.login(email, password);
+
+      if (loginSuccess) {
+        Navigator.pushNamed(context, '/homepage');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid email or password')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -110,8 +132,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                   content: Text('Processing Data'),
                                 ),
                               );
-                              Navigator.pushNamed(context, '/homepage');
-                            } else if (!rememberPassword) {
+                              handleSignIn();
+                            } else if (!_formSignInKey.currentState!.validate()) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text(
@@ -119,7 +141,10 @@ class _SignInScreenState extends State<SignInScreen> {
                               );
                             }
                           },
-                          child: const Text('Sign up'),
+                          child: const Text(
+                            'Sign in',
+                            style: TextStyle(fontFamily: 'Poppins'),
+                          ),
                         ),
                       ),
                       25.0.vertical(),
@@ -156,16 +181,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Icon(
-                            Bootstrap.google,
-                            size: 25,
-                          ),
-                          Icon(
-                            AntDesign.facebook_fill,
+                          CustomLogo(icon: Bootstrap.google, size: 25),
+                          CustomLogo(
+                            icon: AntDesign.facebook_fill,
                             size: 32,
                           ),
-                          Icon(
-                            AntDesign.apple_fill,
+                          CustomLogo(
+                            icon: AntDesign.apple_fill,
                             size: 32,
                           ),
                         ],

@@ -5,17 +5,17 @@ class OrderPage extends StatelessWidget {
   final String orderId;
   final String orderDateTime;
 
-  const OrderPage({
-    super.key,
-    required this.orderId,
-    required this.orderDateTime
-  });
+  const OrderPage(
+      {super.key, required this.orderId, required this.orderDateTime});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Page', style: TextStyle(fontFamily: 'Poppins', fontSize: 24),),
+        title: const Text(
+          'Order Page',
+          style: TextStyle(fontFamily: 'Poppins', fontSize: 30),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -25,12 +25,13 @@ class OrderPage extends StatelessWidget {
           children: [
             Text(
               'Order ID: $orderId',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontFamily: 'Poppins'),
             ),
             8.0.vertical(),
             Text(
               'Order DateTime: $orderDateTime',
-              style: const TextStyle(fontSize: 16),
+              style:
+                  const TextStyle(fontSize: 17, fontFamily: 'Poppins-Regular'),
             )
           ],
         ),

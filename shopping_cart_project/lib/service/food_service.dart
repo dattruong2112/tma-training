@@ -3,9 +3,15 @@ import 'package:intl/intl.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shopping_cart_project/models/foods.dart';
 
+const foodBaseUrl = 'http://172.16.13.249:8080/food';
+const orderBaseUrl = 'http://172.16.13.249:8080/order';
+
+int success = 200;
+int created = 201;
+int notFound = 404;
+int unauthorized = 401;
+
 class FoodService {
-  static int success = 200;
-  static int created = 201;
   final dio = Dio()..interceptors.add(
     PrettyDioLogger(
       requestHeader: true,
@@ -17,22 +23,40 @@ class FoodService {
     ),
   );
 
+
   Future<List<Food>> getFoodByCategory(String category) async {
     var response =
-        await dio.get('http://172.16.13.249:8080/category/$category');
+        await dio.get('$foodBaseUrl/category/$category');
+    return (response.data as List).map((e) => Food.fromJson(e)).toList();
+  }
+
+  Future<List<Food>> getFoodByFavorite() async {
+    var response =
+        await dio.get('$foodBaseUrl/favorite');
     return (response.data as List).map((e) => Food.fromJson(e)).toList();
   }
 
   Future<List<Food>> getFood() async {
-    var response = await dio.get('http://172.16.13.249:8080/food/');
+    var response = await dio.get('$foodBaseUrl/');
     return (response.data as List).map((e) => Food.fromJson(e)).toList();
   }
 
   Future<void> favoriteFood(Food food, bool isFavorite) async {
     try {
-      var response = await dio.put(
-        'http://172.16.13.249:8080/food/edit/favorite/${food.id}',
+      await dio.put(
+        '$foodBaseUrl/edit/favorite/${food.id}',
         data: {'favorite': isFavorite},
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> updateQuantity(Food food, int quantity) async {
+    try {
+      await dio.put(
+        '$foodBaseUrl/edit/quantity/${food.id}',
+        data: {'quantity': quantity},
       );
     } catch (e) {
       print(e);
@@ -52,7 +76,7 @@ class FoodService {
       };
 
       var response = await dio.post(
-        'http://172.16.13.249:8080/order/create',
+        '$orderBaseUrl/create',
         data: orderData,
       );
      

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shopping_cart_project/models/foods.dart';
 import 'package:get/get.dart';
-import 'package:shopping_cart_project/navigation_menu.dart';
+import 'package:shopping_cart_project/widget/navigation_menu.dart';
 import 'package:shopping_cart_project/pages/cart_page.dart';
-import 'package:shopping_cart_project/pages/homescreen.dart';
 import 'package:shopping_cart_project/service/food_service.dart';
 import 'package:shopping_cart_project/widget/sized_box.dart';
 import 'package:shopping_cart_project/widget/widgets.dart';
@@ -16,7 +15,7 @@ class FoodController extends GetxController {
   final FoodService foodService = FoodService();
 
   void toggleFavorite(Food food) async {
-    bool newFavoriteStatus = !isFavorite(food);
+     bool newFavoriteStatus = !isFavorite(food);
 
     if (newFavoriteStatus) {
       categoryController.favoriteItems.add(food.id);
@@ -56,7 +55,6 @@ class _DetailPageState extends State<DetailPage> {
     super.initState();
     foodController.isFavoriteDetails.value =
         foodController.isFavorite(widget.food);
-
   }
 
   @override
@@ -170,7 +168,7 @@ class _DetailPageState extends State<DetailPage> {
               const Icon(Icons.access_time_filled, color: Colors.amber),
               const SizedBox(width: 4),
               Text(
-                widget.food.cookingTime + ' min',
+                '${widget.food.cookingTime} mins',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -201,8 +199,11 @@ class _DetailPageState extends State<DetailPage> {
             borderRadius: BorderRadius.circular(16),
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
-              onTap: () {
+              onTap: () async {
+                await foodController.foodService.updateQuantity(widget.food, quantity);
+
                 cartController.addToCart(widget.food, quantity);
+
                 Get.find<NavigationController>().selectedIndex.value = 3;
                 Navigator.pop(context);
               },

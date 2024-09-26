@@ -34,9 +34,9 @@ class WelcomeScreen extends StatelessWidget {
                             )),
                         TextSpan(
                             text:
-                            '\nEnter your details below to save time and place your order.',
+                            '\nBecome our member to order your dish quickly and easily',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 22,
                               fontFamily: 'SpaceGrotesk',
                             ))
                       ],

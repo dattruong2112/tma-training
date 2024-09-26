@@ -1,15 +1,39 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:shopping_cart_project/navigation_menu.dart';
-import 'package:shopping_cart_project/pages/detail_page.dart';
+import 'package:shopping_cart_project/models/users.dart';
+import 'package:shopping_cart_project/service/user_service.dart';
+import 'package:shopping_cart_project/widget/navigation_menu.dart';
 import 'package:shopping_cart_project/widget/custom_scaffold.dart';
 import 'package:shopping_cart_project/widget/sized_box.dart';
 
-
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  UserService userService = UserService();
+  User? user;
+  final int userId = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserDetails(userId);
+  }
+
+  void fetchUserDetails(int userId) async {
+    User? fetchedUser = await userService.getUserIdBy(userId);
+
+    if (fetchedUser != null) {
+      setState(() {
+        user = fetchedUser;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +50,11 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.all(10),
                   child: CircleAvatar(
                     radius: 70,
                     backgroundColor: Colors.white,
-                    child: Icon(CupertinoIcons.person_fill, color: Colors.black, size: 100,),
+                    child: Icon(Iconsax.profile_circle5, color: Colors.black, size: 130,),
                   ),
                 ),
                 10.0.vertical(),
@@ -45,31 +69,25 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Column(
+                  child: Column(
                     children: [
                       ListTile(
-                        title: Text('First Name'),
-                        subtitle: Text('Danh'),
-                        leading: Icon(Iconsax.personalcard),
-                        trailing: Icon(Iconsax.arrow_right_3),
+                        title: const Text('Full Name'),
+                        subtitle: Text(user!.name),
+                        leading: const Icon(Iconsax.personalcard),
+                        trailing: const Icon(Iconsax.arrow_right),
                       ),
                       ListTile(
-                        title: Text('Last Name'),
-                        subtitle: Text('Danh'),
-                        leading: Icon(Iconsax.user_tag),
-                        trailing: Icon(Iconsax.arrow_right_3),
+                        title: const Text('Role'),
+                        subtitle: Text(user!.role),
+                        leading: const Icon(Iconsax.user_tag),
+                        trailing: const Icon(Iconsax.arrow_right),
                       ),
                       ListTile(
-                        title: Text('Your Bio'),
-                        subtitle: Text('Danh'),
-                        leading: Icon(Iconsax.info_circle),
-                        trailing: Icon(Iconsax.arrow_right_3),
-                      ),
-                      ListTile(
-                        title: Text('Birthday'),
-                        subtitle: Text('8/3/2003'),
-                        leading: Icon(Iconsax.calendar_1),
-                        trailing: Icon(Iconsax.arrow_right_3),
+                        title: const Text('Bio'),
+                        subtitle: Text(user?.bio ?? 'N/A'),
+                        leading: const Icon(Iconsax.info_circle),
+                        trailing: const Icon(Iconsax.arrow_right),
                       ),
                     ],
                   ),

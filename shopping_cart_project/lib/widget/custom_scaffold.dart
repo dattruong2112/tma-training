@@ -39,6 +39,7 @@ class CustomPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           title,
+
           style: const TextStyle(
             fontFamily: 'Poppins',
             fontSize: 24,

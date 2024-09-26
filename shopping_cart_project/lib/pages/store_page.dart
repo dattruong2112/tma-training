@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shopping_cart_project/models/foods.dart';
-import 'package:shopping_cart_project/navigation_menu.dart';
-import 'package:shopping_cart_project/pages/detail_page.dart';
-import 'package:shopping_cart_project/service/food_service.dart';
+import 'package:shopping_cart_project/widget/navigation_menu.dart';
 import 'package:shopping_cart_project/widget/sized_box.dart';
 import 'package:shopping_cart_project/widget/widgets.dart';
 
@@ -15,20 +12,20 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage> {
-  List<Food> food = [];
-
-  @override
-  void initState() {
-    fetchFood();
-    super.initState();
-  }
-
-  Future<void> fetchFood() async {
-    food = await FoodService().getFood();
-    setState(() {
-
-    });
-  }
+  // List<Food> food = [];
+  //
+  // @override
+  // void initState() {
+  //   fetchFood();
+  //   super.initState();
+  // }
+  //
+  // Future<void> fetchFood() async {
+  //   food = await FoodService().getFood();
+  //   setState(() {
+  //
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +50,7 @@ class _StorePageState extends State<StorePage> {
             categories(),
             const Divider(color: Colors.black, thickness: 1,),
             20.0.vertical(),
-            gridFood(food),
+            gridFood(),
           ],
         ),
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:shopping_cart_project/service/user_service.dart';
+import 'package:shopping_cart_project/widget/custom_logo.dart';
 import 'package:shopping_cart_project/widget/custom_scaffold.dart';
 import 'package:shopping_cart_project/widget/custom_text_form.dart';
 import 'package:shopping_cart_project/widget/sized_box.dart';
@@ -14,7 +16,10 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
-  bool agreePersonalData = true;
+  bool agreePersonalData = false;
+
+  UserService userService = UserService();
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -50,20 +55,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       40.0.vertical(),
-                      // full name
                       CustomTextFormField(
                         label: 'Full Name',
                         hintText: 'Enter Full Name',
                         controller: fullNameController,
                       ),
                       25.0.vertical(),
-                      // email
                       CustomTextFormField(
                           label: 'Email',
                           hintText: 'Enter Email',
                           controller: emailController),
                       25.0.vertical(),
-                      // password
                       CustomPasswordFormField(
                           label: 'Password',
                           hintText: 'Enter Password',
@@ -71,7 +73,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // i agree to the processing
                       Row(
                         children: [
                           Checkbox(
@@ -102,9 +103,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formSignupKey.currentState!.validate() &&
                                 agreePersonalData) {
+                              await userService.register(
+                                fullNameController.text,
+                                emailController.text,
+                                passwordController.text,
+                              );
+                              fullNameController.clear();
+                              emailController.clear();
+                              passwordController.clear();
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Processing Data'),
@@ -120,7 +130,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               );
                             }
                           },
-                          child: const Text('Sign up'),
+                          child: const Text('Sign up',
+                              style: TextStyle(fontFamily: 'Poppins')),
                         ),
                       ),
                       30.0.vertical(),
@@ -159,18 +170,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Icon(
-                            Bootstrap.google,
-                            size: 25,
-                          ),
-                          Icon(
-                            AntDesign.facebook_fill,
-                            size: 32,
-                          ),
-                          Icon(
-                            AntDesign.apple_fill,
-                            size: 32,
-                          ),
+                          CustomLogo(icon: Bootstrap.google, size: 25),
+                          CustomLogo(icon: AntDesign.facebook_fill, size: 32),
+                          CustomLogo(icon: AntDesign.apple_fill, size: 32),
                         ],
                       ),
                       25.0.vertical(),

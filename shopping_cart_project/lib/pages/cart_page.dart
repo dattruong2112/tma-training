@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_cart_project/models/foods.dart';
-import 'package:shopping_cart_project/navigation_menu.dart';
+import 'package:shopping_cart_project/widget/navigation_menu.dart';
 import 'package:shopping_cart_project/pages/order_page.dart';
 import 'package:shopping_cart_project/service/food_service.dart';
 
@@ -118,6 +118,7 @@ class CartPage extends StatelessWidget {
                             builder: (_) => OrderPage(
                                 orderId: "${response?["orderId"]}",
                                 orderDateTime: response?["orderDateTime"])));
+                    cartController.cartItems.clear();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),

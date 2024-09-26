@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shopping_cart_project/models/foods.dart';
-import 'package:shopping_cart_project/navigation_menu.dart';
+import 'package:shopping_cart_project/widget/navigation_menu.dart';
 import 'package:shopping_cart_project/pages/detail_page.dart';
+import 'package:shopping_cart_project/service/food_service.dart';
 
 class CategoryController extends GetxController {
   var selectedIndex = 0.obs;
   var selectedCategory = 'Foods'.obs;
+  var foodList = <Food>[].obs;
   var favoriteItems = <String>[].obs;
   var cartItems = <String>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchFoodByCategory();
+  }
 
   void changeCategory(int index) {
     selectedIndex.value = index;
@@ -21,8 +29,16 @@ class CategoryController extends GetxController {
       'Desserts'
     ];
     selectedCategory.value = categories[index];
+    fetchFoodByCategory();
   }
 
+  void fetchFoodByCategory() async {
+    List<Food> foods =
+        await FoodService().getFoodByCategory(selectedCategory.value);
+    foodList.value = foods;
+  }
+
+  //put favorite
   void toggleFavorite(Food food) {
     if (favoriteItems.contains(food.id)) {
       favoriteItems.remove(food.id);
@@ -90,11 +106,13 @@ Widget header() {
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
-              'assets/images/burger.png',
-              fit: BoxFit.cover,
-              width: 40,
-              height: 40,
+            child: const Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: Icon(
+                Iconsax.profile_circle5,
+                color: Colors.black,
+                size: 40,
+              ),
             ),
           ),
         ),
@@ -202,139 +220,138 @@ Widget categories() {
   );
 }
 
-Widget gridFood(List<Food>? foods) {
+Widget gridFood() {
   final CategoryController categoryController = Get.find<CategoryController>();
-  List<Food> filteredFoods = [];
-  if (foods != null) {
-    filteredFoods = foods.where((food) {
-      return food.category == categoryController.selectedCategory.value;
-    }).toList();
-  }
-  return GridView.builder(
-    itemCount: filteredFoods.length,
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    padding: const EdgeInsets.all(16),
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      mainAxisExtent: 261,
-    ),
-    itemBuilder: (context, index) {
-      Food food = filteredFoods[index];
-      bool isFavorite = categoryController.isFavorite(food);
 
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return DetailPage(food: food);
-          }));
-        },
-        child: Container(
-          height: 261,
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Stack(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(120),
-                      child: Image.network(
-                        food.image,
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.fill,
+  return Obx(() {
+    List<Food> foods = categoryController.foodList;
+
+    return GridView.builder(
+      itemCount: foods.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        mainAxisExtent: 261,
+      ),
+      itemBuilder: (context, index) {
+        Food food = foods[index];
+        bool isFavorite = categoryController.isFavorite(food);
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return DetailPage(food: food);
+            }));
+          },
+          child: Container(
+            height: 261,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(120),
+                        child: Image.network(
+                          food.image,
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      food.name,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontFamily: 'SpaceGrotesk',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        food.name,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontFamily: 'SpaceGrotesk',
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${food.cookingTime} mins',
+                            style: TextStyle(color: Colors.grey[600]),
                           ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                          const Spacer(),
+                          const Icon(Icons.star, color: Colors.amber, size: 18),
+                          const SizedBox(width: 4),
+                          Text(
+                            food.rate.toString(),
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        '\$${food.price}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'SpaceGrotesk',
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: GestureDetector(
+                    onTap: () {
+                      FoodController().toggleFavorite(food);
+                    },
+                    child: Icon(
+                      isFavorite ? Iconsax.heart5 : Iconsax.heart_add,
+                      color: isFavorite ? Colors.red : Colors.black54,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Text(
-                          food.cookingTime + ' mins',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                        const Spacer(),
-                        const Icon(Icons.star, color: Colors.amber, size: 18),
-                        const SizedBox(width: 4),
-                        Text(
-                          food.rate.toString(),
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      ],
+                ),
+                const Align(
+                  alignment: Alignment.bottomRight,
+                  child: Material(
+                    color: Colors.lightBlue,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      '\$${food.price}',
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'SpaceGrotesk',
-                        fontSize: 20,
+                    child: InkWell(
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(Iconsax.add, color: Colors.white),
                       ),
                     ),
                   ),
-                ],
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: GestureDetector(
-                  onTap: () {
-                    categoryController.toggleFavorite(food);
-                  },
-                  child: Icon(
-                    isFavorite ? Iconsax.heart5 : Iconsax.heart_add,
-                    color: isFavorite ? Colors.red : Colors.black54,
-                  ),
                 ),
-              ),
-              const Align(
-                alignment: Alignment.bottomRight,
-                child: Material(
-                  color: Colors.lightBlue,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
-                  ),
-                  child: InkWell(
-                    child: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Icon(Iconsax.add, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
+  });
 }
